@@ -1,0 +1,6 @@
+version: 1.2
+workflows:
+  - name: gap_length_calc_parallel
+    subclass: WDL
+    primaryDescriptorPath: /task2.wdl
+    testParameterFiles: []
