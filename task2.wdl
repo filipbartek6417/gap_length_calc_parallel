@@ -28,7 +28,7 @@ task SplitSequences {
     }
 
     command {
-        awk '/^>/ { if (seq) close(seq); seq = substr($1, 2) ".fasta"; print > seq; next } { print >> seq }' ~{assembly_file}
+        gzip -d -c ~{assembly_file} | awk '/^>/ { if (seq) close(seq); seq = substr($1, 2) ".fasta"; print > seq; next } { print >> seq }'
         echo $(ls *.fasta | tr '\n' ',') > split_sequences.txt
     }
 
@@ -50,7 +50,7 @@ task CountGaps {
     }
 
     command {
-        grep -o "[Nn\\-]+" ~{assembly_sequence} | awk '{ total += length($0) } END { print total }' > gap_length.txt
+         grep -v "^>" ~{assembly_sequence} | grep -o "[Nn-]" | tr -d "\n" | wc -m > gap_length.txt
     }
 
     output {
