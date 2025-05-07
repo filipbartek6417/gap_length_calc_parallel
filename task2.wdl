@@ -74,9 +74,9 @@ task MergeResults {
         Array[Int] gap_counts
     }
 
-    command <<EOF
+    command <<<
     echo "~{sep=" + " gap_counts}" | bc > total_gap_length.txt
-    EOF
+    >>>
 
     output {
         Int total_gap_length = read_int("total_gap_length.txt")
