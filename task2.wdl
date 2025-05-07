@@ -36,9 +36,9 @@ task SplitSequences {
         apt-get update && apt-get install -y samtools && rm -rf /var/lib/apt/lists/* && \
         gzip -d -c ~{assembly_file} > unzipped.fa && \
         assembly=unzipped.fa && \
-        samtools faidx $assembly && \
+        samtools faidx "$assembly" && \
         cut -f1 ~{assembly_file}.fai | while read -r seq; do \
-            samtools faidx $assembly "$seq" > "$seq.fasta" \
+            samtools faidx "$assembly" "$seq" > "$seq.fasta" \
         done && \
         ls *.fasta > split_sequences.txt
     >>>
