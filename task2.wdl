@@ -27,17 +27,21 @@ task SplitSequences {
         File assembly_file
     }
 
-    command {
-        gzip -d -c ~{assembly_file} | awk '/^>/ { if (seq) close(seq); seq = substr($1, 2) ".fasta"; print > seq; next } { print >> seq }'
-        echo $(ls *.fasta | tr '\n' ',') > split_sequences.txt
-    }
+    command >>>
+        apt-get update && apt-get install -y samtools && rm -rf /var/lib/apt/lists/*
+        samtools faidx ~{assembly_file}
+        cut -f1 ~{assembly_file}.fai | while read -r seq; do
+            samtools faidx ~{assembly_file} "$seq" > "$seq.fasta"
+        done
+        ls *.fasta > split_sequences.txt
+    <<<
 
     output {
         Array[File] split_output = read_lines("split_sequences.txt")
     }
 
     runtime {
-        docker: "debian:bullseye"
+        docker: "ubuntu:latest"
         memory: "4 GB"
         cpu: 1
         preemptible: 2
@@ -50,7 +54,7 @@ task CountGaps {
     }
 
     command {
-         grep -v "^>" ~{assembly_sequence} | grep -o "[Nn-]" | tr -d "\n" | wc -m > gap_length.txt
+         grep -v "^>" ~{assembly_sequence} | grep -o "[Nn\-]" | tr -d "\n" | wc -m > gap_length.txt
     }
 
     output {
@@ -58,7 +62,7 @@ task CountGaps {
     }
 
     runtime {
-        docker: "debian:bullseye"
+        docker: "ubuntu:latest"
         memory: "4 GB"
         cpu: 1
         preemptible: 2
@@ -79,7 +83,7 @@ task MergeResults {
     }
 
     runtime {
-        docker: "debian:bullseye"
+        docker: "ubuntu:latest"
         memory: "4 GB"
         cpu: 1
         preemptible: 2
