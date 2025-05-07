@@ -5,6 +5,11 @@ workflow ProcessAssemblyParallel {
         File assembly_file
     }
 
+    call SplitSequences {
+        input:
+            assembly_file = assembly_file
+    }
+
     scatter (sequence in SplitSequences.split_output) {
         call CountGaps {
             input:
