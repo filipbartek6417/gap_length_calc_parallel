@@ -40,7 +40,7 @@ task SplitSequences {
         docker: "debian:bullseye"
         memory: "4 GB"
         cpu: 1
-        preemptible: true
+        preemptible: 2
     }
 }
 
@@ -61,7 +61,7 @@ task CountGaps {
         docker: "debian:bullseye"
         memory: "4 GB"
         cpu: 1
-        preemptible: true
+        preemptible: 2
     }
 }
 
@@ -82,6 +82,6 @@ task MergeResults {
         docker: "debian:bullseye"
         memory: "4 GB"
         cpu: 1
-        preemptible: true
+        preemptible: 2
     }
 }
